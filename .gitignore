@@ -1,0 +1,72 @@
+# --- Secrets & Environment Variables (BILKUL UPLOAD NA KAREIN) ---
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+*.pem
+*.key
+serviceAccountKey.json
+
+# --- Node.js (Dependencies) ---
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# --- Next.js / React Build Files ---
+.next/
+out/
+build/
+dist/
+.vercel
+
+# --- Python / Flask ---
+__pycache__/
+*.py[cod]
+*$py.class
+.venv/
+venv/
+ENV/
+.env/
+build/
+develop-eggs/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# --- Database ---
+*.db
+*.sqlite
+*.sqlite3
+# Prisma specific
+/prisma/migrations/
+
+# --- Operating System Files ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE/Editor Files ---
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# --- Chrome Extension ---
+# Agar aapne extension build ki hai toh uska folder yahan daal sakte hain
+# chrome-extension/dist/
+
+# --- Firebase ---
+firebase-debug.log
+.firebase/

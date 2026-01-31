@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Payment History - Cyber Kavach</title>
+    <link rel="stylesheet" href="fire kavach/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <style>
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top, #0a0f1f, #000);
+            color: #fff;
+            font-family: "Segoe UI", sans-serif;
+        }
+
+        .payments-container {
+            max-width: 1200px;
+            margin: 100px auto 40px;
+            padding: 0 20px;
+        }
+
+        .page-header {
+            margin-bottom: 30px;
+        }
+
+        .page-header h1 {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .page-header p {
+            color: #94a3b8;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .stat-card {
+            background: rgba(11, 17, 32, 0.8);
+            border: 1px solid #1f2933;
+            border-radius: 16px;
+            padding: 25px;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-card .icon {
+            font-size: 32px;
+            margin-bottom: 15px;
+        }
+
+        .stat-card .label {
+            color: #94a3b8;
+            font-size: 14px;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .value {
+            font-size: 28px;
+            font-weight: bold;
+        }
+
+        .payments-card {
+            background: rgba(11, 17, 32, 0.8);
+            border: 1px solid #1f2933;
+            border-radius: 20px;
+            padding: 30px;
+            backdrop-filter: blur(10px);
+        }
+
+        .payments-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .payments-table thead tr {
+            border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .payments-table th {
+            padding: 15px;
+            text-align: left;
+            color: #f97316;
+            font-weight: 600;
+            font-size: 14px;
+            text-transform: uppercase;
+        }
+
+        .payments-table td {
+            padding: 20px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .payments-table tr:hover {
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .status-badge.success {
+            background: rgba(34, 197, 94, 0.1);
+            color: #22c55e;
+            border: 1px solid #22c55e;
+        }
+
+        .status-badge.pending {
+            background: rgba(251, 191, 36, 0.1);
+            color: #fbbf24;
+            border: 1px solid #fbbf24;
+        }
+
+        .status-badge.failed {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+            border: 1px solid #ef4444;
+        }
+
+        .invoice-btn {
+            padding: 8px 16px;
+            background: linear-gradient(135deg, #f97316, #fbbf24);
+            border: none;
+            border-radius: 6px;
+            color: #000;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 13px;
+            transition: 0.3s;
+        }
+
+        .invoice-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(249, 115, 22, 0.3);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #64748b;
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: #334155;
+        }
+
+        .empty-state h3 {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #94a3b8;
+        }
+
+        @media (max-width: 768px) {
+            .payments-table {
+                font-size: 13px;
+            }
+
+            .payments-table th,
+            .payments-table td {
+                padding: 10px 8px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <header id="navbar">
+        <div class="logo">🔥 Cyber Kavach</div>
+        <nav class="nav-links">
+            <a href="dashboard.html">← Back to Dashboard</a>
+        </nav>
+    </header>
+
+    <div class="payments-container">
+        <div class="page-header">
+            <h1>💳 Payment History</h1>
+            <p>View all your transactions and download invoices</p>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="icon">📊</div>
+                <div class="label">Total Transactions</div>
+                <div class="value" id="total-payments">0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">💰</div>
+                <div class="label">Total Spent</div>
+                <div class="value" id="total-spent">₹0</div>
+            </div>
+
+            <div class="stat-card">
+                <div class="icon">✅</div>
+                <div class="label">Successful Payments</div>
+                <div class="value" id="successful-payments">0</div>
+            </div>
+        </div>
+
+        <div class="payments-card">
+            <table class="payments-table" id="payments-table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Plan</th>
+                        <th>Amount</th>
+                        <th>Payment ID</th>
+                        <th>Status</th>
+                        <th>Invoice</th>
+                    </tr>
+                </thead>
+                <tbody id="payments-body">
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-receipt"></i>
+                                <h3>Loading...</h3>
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:5001/api';
+        const token = localStorage.getItem('auth-token');
+
+        if (!token) {
+            window.location.href = 'fire kavach/index.html';
+        }
+
+        async function loadPaymentHistory() {
+            try {
+                const res = await fetch(`${API_URL}/user/payment-history`, {
+                    headers: { 'auth-token': token }
+                });
+
+                if (!res.ok) throw new Error('Failed to load payments');
+
+                const data = await res.json();
+                const payments = data.payments || [];
+                const totalSpent = data.totalSpent || 0;
+
+                // Update stats
+                document.getElementById('total-payments').innerText = payments.length;
+                document.getElementById('total-spent').innerText = `₹${totalSpent}`;
+                document.getElementById('successful-payments').innerText = payments.filter(p => p.status === 'success').length;
+
+                // Populate table
+                const tbody = document.getElementById('payments-body');
+
+                if (payments.length === 0) {
+                    tbody.innerHTML = `
+                        <tr>
+                            <td colspan="6">
+                                <div class="empty-state">
+                                    <i class="fas fa-receipt"></i>
+                                    <h3>No Payments Yet</h3>
+                                    <p>Your payment history will appear here</p>
+                                </div>
+                            </td>
+                        </tr>
+                    `;
+                    return;
+                }
+
+                tbody.innerHTML = payments.map(payment => {
+                    const date = new Date(payment.date).toLocaleDateString('en-IN', {
+                        day: '2-digit',
+                        month: 'short',
+                        year: 'numeric'
+                    });
+
+                    const statusClass = payment.status === 'success' ? 'success' : (payment.status === 'pending' ? 'pending' : 'failed');
+
+                    return `
+                        <tr>
+                            <td>${date}</td>
+                            <td><strong>${payment.plan}</strong></td>
+                            <td><strong>₹${payment.amount}</strong></td>
+                            <td><code style="color: #94a3b8; font-size: 12px;">${payment.paymentId}</code></td>
+                            <td><span class="status-badge ${statusClass}">${payment.status.toUpperCase()}</span></td>
+                            <td>
+                                <button class="invoice-btn" onclick="downloadInvoice('${payment.paymentId}')">
+                                    <i class="fas fa-download"></i> Invoice
+                                </button>
+                            </td>
+                        </tr>
+                    `;
+                }).join('');
+
+            } catch (error) {
+                console.error('Error loading payments:', error);
+                document.getElementById('payments-body').innerHTML = `
+                    <tr>
+                        <td colspan="6">
+                            <div class="empty-state">
+                                <i class="fas fa-exclamation-triangle" style="color: #ef4444;"></i>
+                                <h3>Error Loading Payments</h3>
+                                <p>Please check if the backend is running</p>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }
+
+        async function downloadInvoice(paymentId) {
+            try {
+                const res = await fetch(`${API_URL}/user/invoice/${paymentId}`, {
+                    headers: { 'auth-token': token }
+                });
+
+                if (!res.ok) throw new Error('Invoice not found');
+
+                const invoice = await res.json();
+
+                // Create simple invoice HTML
+                const invoiceHTML = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <title>Invoice ${invoice.invoiceNumber}</title>
+                        <style>
+                            body { font-family: Arial; padding: 40px; max-width: 800px; margin: 0 auto; }
+                            .header { border-bottom: 3px solid #f97316; padding-bottom: 20px; margin-bottom: 30px; }
+                            .header h1 { color: #f97316; margin: 0; }
+                            .details { margin: 20px 0; }
+                            .details strong { display: inline-block; width: 150px; }
+                            .total { background: #f0f0f0; padding: 15px; margin-top: 30px; font-size: 18px; }
+                            @media print { button { display: none; } }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="header">
+                            <h1>🔥 Cyber Kavach</h1>
+                            <p>Invoice #${invoice.invoiceNumber}</p>
+                        </div>
+                        <div class="details">
+                            <p><strong>Customer:</strong> ${invoice.customerName}</p>
+                            <p><strong>Email:</strong> ${invoice.customerEmail}</p>
+                            <p><strong>Date:</strong> ${new Date(invoice.date).toLocaleDateString()}</p>
+                            <p><strong>Plan:</strong> ${invoice.plan}</p>
+                            <p><strong>Payment ID:</strong> ${invoice.paymentId}</p>
+                            <p><strong>Order ID:</strong> ${invoice.orderId}</p>
+                            <p><strong>Status:</strong> ${invoice.status.toUpperCase()}</p>
+                        </div>
+                        <div class="total">
+                            <strong>Total Amount:</strong> ₹${invoice.amount}
+                        </div>
+                        <button onclick="window.print()" style="margin-top: 20px; padding: 10px 20px; background: #f97316; color: white; border: none; cursor: pointer;">Print Invoice</button>
+                    </body>
+                    </html>
+                `;
+
+                // Open in new window
+                const printWindow = window.open('', '_blank');
+                printWindow.document.write(invoiceHTML);
+                printWindow.document.close();
+
+            } catch (error) {
+                alert('Error downloading invoice');
+            }
+        }
+
+        // Load payment history on page load
+        loadPaymentHistory();
+    </script>
+</body>
+
+</html>

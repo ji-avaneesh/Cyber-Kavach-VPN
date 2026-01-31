@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cyber Kavach</title>
+    <link rel="stylesheet" href="popup.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Auth Page (Login & Signup) -->
+    <div id="login-page" class="auth-page">
+        <div class="auth-header">
+            <img src="phishing_url_detector/extension/icons/icon128.png" alt="Cyber Kavach" class="auth-logo">
+            <h2>Cyber Kavach</h2>
+            <p>Your Complete Security Solution</p>
+        </div>
+
+        <!-- Alert Box -->
+        <div class="alert" id="auth-alert" style="display: none;"></div>
+
+        <!-- Google Login Button -->
+        <button id="google-login-btn" class="btn btn-google">
+            <i class="fab fa-google"></i>
+            Continue with Google
+        </button>
+
+        <div class="divider">
+            <span>OR</span>
+        </div>
+
+        <!-- LOGIN FORM -->
+        <form id="login-form" class="auth-form">
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="login-email" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <div class="password-input-container">
+                    <input type="password" id="login-password" placeholder="Enter password" required>
+                    <i class="fas fa-eye toggle-password" data-target="login-password"></i>
+                </div>
+            </div>
+            <div class="form-links">
+                <a href="#" id="forgot-password-link">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+            <p class="switch-auth">
+                Don't have an account? <a href="#" id="show-register-btn">Sign Up</a>
+            </p>
+        </form>
+
+        <!-- REGISTER FORM (Hidden by default) -->
+        <form id="register-form" class="auth-form" style="display: none;">
+            <div class="form-group">
+                <label><i class="fas fa-user"></i> Full Name</label>
+                <input type="text" id="register-name" placeholder="John Doe" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-envelope"></i> Email</label>
+                <input type="email" id="register-email" placeholder="your@email.com" required>
+            </div>
+            <div class="form-group">
+                <label><i class="fas fa-lock"></i> Password</label>
+                <div class="password-input-container">
+                    <input type="password" id="register-password" placeholder="Create password" required>
+                    <i class="fas fa-eye toggle-password" data-target="register-password"></i>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+            <p class="switch-auth">
+                Already have an account? <a href="#" id="show-login-btn">Sign In</a>
+            </p>
+        </form>
+    </div>
+
+    <!-- Main Dashboard (Shows After Login) -->
+    <div id="dashboard-page" class="container" style="display: none;">
+        <!-- Header with Logo -->
+        <div class="header">
+            <div class="header-content">
+                <img src="phishing_url_detector/extension/icons/icon128.png" alt="Cyber Kavach" class="logo-img">
+                <div class="header-text">
+                    <h1>Cyber Kavach</h1>
+                    <span id="user-email-display" class="user-info">user@email.com</span>
+                </div>
+            </div>
+            <div class="header-actions">
+                <span id="user-plan-badge" class="badge">Free</span>
+                <button id="logout-btn" class="btn-icon" title="Logout">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Upgrade Banner for Free Users -->
+        <div id="upgrade-banner" class="upgrade-banner" style="display: none;">
+            <div class="upgrade-content">
+                <i class="fas fa-crown"></i>
+                <div>
+                    <strong>Upgrade to Premium</strong>
+                    <p>Unlock unlimited servers and advanced protection</p>
+                </div>
+                <button id="upgrade-btn-banner" class="btn-upgrade">
+                    <i class="fas fa-gem"></i>
+                    Get Pro
+                </button>
+            </div>
+        </div>
+
+        <!-- Tab Navigation -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="phishing">
+                <i class="fas fa-shield-alt"></i>
+                Phishing Guard
+            </button>
+            <button class="tab-btn" data-tab="vpn">
+                <i class="fas fa-globe"></i>
+                VPN
+            </button>
+            <button class="tab-btn" data-tab="settings">
+                <i class="fas fa-cog"></i>
+                Settings
+            </button>
+        </div>
+
+        <!-- Phishing Detection Tab -->
+        <div class="tab-content active" id="phishing-tab">
+            <!-- Current Site Info -->
+            <div class="card">
+                <h3>
+                    <i class="fas fa-globe"></i>
+                    Current Website
+                </h3>
+                <div class="url-display" id="currentUrl">Loading...</div>
+
+                <!-- Risk Score -->
+                <div class="risk-score">
+                    <div class="score-header">
+                        <span>Risk Score</span>
+                        <span id="scoreValue">--</span>
+                    </div>
+                    <div class="score-bar">
+                        <div class="score-fill" id="scoreFill"></div>
+                    </div>
+                    <div class="score-labels">
+                        <span>Safe</span>
+                        <span>Suspicious</span>
+                        <span>Dangerous</span>
+                    </div>
+                </div>
+
+                <!-- Warnings -->
+                <div class="warnings" id="warningsContainer">
+                    <h4>Warnings</h4>
+                    <div class="warnings-list" id="warningsList">
+                        No warnings detected
+                    </div>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="actions">
+                <button id="scanBtn" class="btn btn-primary">
+                    <i class="fas fa-search"></i>
+                    Scan URL
+                </button>
+                <button id="whitelistBtn" class="btn btn-secondary">
+                    <i class="fas fa-check"></i>
+                    Whitelist
+                </button>
+                <button id="reportBtn" class="btn btn-danger">
+                    <i class="fas fa-exclamation-triangle"></i>
+                    Report
+                </button>
+            </div>
+
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <i class="fas fa-search"></i>
+                    <div>
+                        <span class="stat-value" id="scannedCount">0</span>
+                        <span class="stat-label">Scanned</span>
+                    </div>
+                </div>
+                <div class="stat-item">
+                    <i class="fas fa-shield-alt"></i>
+                    <div>
+                        <span class="stat-value" id="blockedCount">0</span>
+                        <span class="stat-label">Blocked</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VPN Tab -->
+        <div class="tab-content" id="vpn-tab">
+            <div class="card">
+                <h3>
+                    <i class="fas fa-globe"></i>
+                    VPN Connection
+                </h3>
+
+                <div class="vpn-status" id="vpn-status">
+                    <div class="status-icon disconnected">
+                        <i class="fas fa-power-off"></i>
+                    </div>
+                    <div class="status-text">
+                        <h4 id="vpn-status-title">Disconnected</h4>
+                        <p id="vpn-status-subtitle">Click to connect</p>
+                    </div>
+                </div>
+
+                <button id="vpn-connect-btn" class="btn btn-connect">
+                    <i class="fas fa-power-off"></i>
+                    Connect VPN
+                </button>
+
+                <div class="server-selector">
+                    <label>
+                        <i class="fas fa-server"></i>
+                        Select Server
+                    </label>
+                    <select id="server-select">
+                        <option value="auto">🌐 Auto (Best)</option>
+                        <option value="india">🇮🇳 India</option>
+                        <option value="usa">🇺🇸 USA</option>
+                        <option value="uk">🇬🇧 UK</option>
+                        <option value="singapore">🇸🇬 Singapore</option>
+                        <option value="japan">🇯🇵 Japan</option>
+                    </select>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <i class="fas fa-bolt"></i>
+                        <div>
+                            <span class="stat-value" id="vpn-speed">0 Mbps</span>
+                            <span class="stat-label">Speed</span>
+                        </div>
+                    </div>
+                    <div class="stat-item">
+                        <i class="fas fa-clock"></i>
+                        <div>
+                            <span class="stat-value" id="vpn-duration">00:00</span>
+                            <span class="stat-label">Duration</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Settings Tab -->
+        <div class="tab-content" id="settings-tab">
+            <div class="card">
+                <h3>
+                    <i class="fas fa-cog"></i>
+                    Settings
+                </h3>
+
+                <div class="settings-group">
+                    <h4>Protection Level</h4>
+
+                    <div class="setting-item">
+                        <label>Scan Sensitivity</label>
+                        <select id="protectionLevel">
+                            <option value="low">Low</option>
+                            <option value="medium" selected>Medium</option>
+                            <option value="high">High</option>
+                        </select>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="autoScan" checked>
+                            <span>Auto-scan websites</span>
+                        </label>
+                    </div>
+
+                    <div class="setting-item">
+                        <label class="checkbox-label">
+                            <input type="checkbox" id="blockDangerous" checked>
+                            <span>Block dangerous sites</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="actions">
+                    <button id="saveSettingsBtn" class="btn btn-primary">
+                        <i class="fas fa-save"></i>
+                        Save Settings
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+
+</html>
