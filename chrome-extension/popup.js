@@ -2,7 +2,7 @@
 
 const API_URL = 'http://localhost:5001/api/auth';
 const PAYMENT_URL = 'http://localhost:8080/fire%20kavach/index.html#pricing';
-const PHISHING_API = 'http://127.0.0.1:5000';
+const PHISHING_API = 'http://94.249.213.206:5000';
 const WEBSITE_LOGIN_URL = 'http://localhost:8080/fire%20kavach/index.html'; // Fallback for Google
 
 // ========== DOM ELEMENTS ==========
@@ -249,7 +249,7 @@ function initializePhishingDetection() {
 
 async function scanURL(url) {
     try {
-        const response = await fetch(`${PHISHING_API}/predict_phishing`, {
+        const response = await fetch(`${PHISHING_API}/predict`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: url })
