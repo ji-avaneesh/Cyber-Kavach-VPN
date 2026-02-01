@@ -69,7 +69,16 @@ function initAuthEventListeners() {
         });
     }
 
-    // 3. Register Submit
+    // 3. Forgot Password Link
+    const forgotPasswordLink = document.getElementById('forgot-password-link');
+    if (forgotPasswordLink) {
+        forgotPasswordLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            chrome.tabs.create({ url: 'http://localhost:8080/forgot-password.html' });
+        });
+    }
+
+    // 4. Register Submit
     if (registerForm) {
         registerForm.addEventListener('submit', handleRegister);
     }
