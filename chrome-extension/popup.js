@@ -247,23 +247,46 @@ function initializePhishingDetection() {
     });
 }
 
+const TRUSTED_DOMAINS = [
+    'google.com', 'www.google.com', 'youtube.com', 'www.youtube.com',
+    'facebook.com', 'www.facebook.com', 'instagram.com', 'twitter.com',
+    'linkedin.com', 'github.com', 'microsoft.com', 'amazon.com',
+    'netflix.com', 'apple.com', 'gmail.com', 'yahoo.com'
+];
+
 async function scanURL(url) {
     try {
+        const urlObj = new URL(url);
+        const hostname = urlObj.hostname;
+
+        // 1. Check Trusted Domains (Whitelist)
+        if (TRUSTED_DOMAINS.some(d => hostname.endsWith(d))) {
+            updateRiskScore(0, {}); // Safe
+            document.getElementById('warningsList').innerHTML = '<div style="color: #4ade80;">✅ Verified Trusted Domain</div>';
+            return;
+        }
+
+        // 2. ML Scan
         const response = await fetch(`${PHISHING_API}/predict`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ url: url })
         });
+
         const data = await response.json();
+
         if (data.risk_score !== undefined) {
             updateRiskScore(data.risk_score, data.features || {});
             incrementStats('scanned');
-            if (data.risk_score >= 70) incrementStats('blocked');
+
+            if (data.risk_score >= 70) {
+                incrementStats('blocked');
+            }
         }
     } catch (error) {
         console.error('Scan error:', error);
-        const wList = document.getElementById('warningsList');
-        if (wList) wList.innerHTML = '<div style="color: #ef4444;">Unable to scan. Backend offline.</div>';
+        document.getElementById('warningsList').innerHTML =
+            '<div style="color: #ef4444;">Unable to scan. Phishing backend offline.</div>';
     }
 }
 
