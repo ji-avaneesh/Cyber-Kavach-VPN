@@ -54,7 +54,8 @@ router.post('/order', verifyToken, async (req, res) => {
             currency: "INR",
             receipt: "receipt_" + Math.random().toString(36).substring(7),
             notes: {
-                userId: user.id // Store userId in notes for Webhook to use
+                userId: user.id, // Store userId in notes for Webhook to use
+                plan: req.body.plan || 'monthly'
             }
         };
 
@@ -203,7 +204,7 @@ router.post('/mock-payment', verifyToken, async (req, res) => {
                     razorpayPaymentId: `MOCK_${Date.now()}`,
                     razorpayOrderId: `MOCK_ORDER_${Date.now()}`,
                     subscriptionStatus: 'active',
-                    subscriptionPlan: 'pro',
+                    subscriptionPlan: plan || 'pro',
                     subscriptionStartDate: new Date()
                 });
 
